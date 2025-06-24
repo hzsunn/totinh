@@ -1,0 +1,60 @@
+<audio id="bg-music" src="hpbd.m4a" loop></audio>
+
+<!-- Nút SVG điều khiển nhạc -->
+<button id="toggle-music" style="
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 9999;
+  padding: 0;
+">
+  <!-- SVG phát -->
+  <svg id="music-icon" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="#ffffff">
+    <path d="M8 5v14l11-7z"/>
+  </svg>
+</button>
+
+<script>
+  const bgMusic = document.getElementById('bg-music');
+  const toggleBtn = document.getElementById('toggle-music');
+  const musicIcon = document.getElementById('music-icon');
+
+  const playIconPath = `<path d="M8 5v14l11-7z"/>`;
+  const pauseIconPath = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>`;
+
+  // Chuyển icon
+  function setIcon(isPlaying) {
+    musicIcon.innerHTML = isPlaying ? pauseIconPath : playIconPath;
+  }
+
+  // Phát nhạc lần đầu khi người dùng tương tác
+  function playBgMusicOnce() {
+    bgMusic.play().then(() => {
+      setIcon(true);
+    }).catch(e => {
+      console.warn("Không thể phát nhạc:", e);
+    });
+    document.removeEventListener('click', playBgMusicOnce);
+    document.removeEventListener('touchstart', playBgMusicOnce);
+  }
+
+  // Bật/tắt nhạc
+  toggleBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (bgMusic.paused) {
+      bgMusic.play();
+      setIcon(true);
+    } else {
+      bgMusic.pause();
+      setIcon(false);
+    }
+  });
+
+  document.addEventListener('click', playBgMusicOnce);
+  document.addEventListener('touchstart', playBgMusicOnce);
+</script>
